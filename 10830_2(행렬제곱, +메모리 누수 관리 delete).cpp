@@ -24,7 +24,10 @@ int** matrix_mul(int** A, int** B) {
 
 int** matrix_pow(int** A, long long pow) {
 	if (pow == (long long)1) {
-		return A;
+		int** ret = new int* [N];
+		for (int i = 0; i < N; i++)ret[i] = new int[N];
+		for (int i = 0; i < N; i++) for (int j = 0; j < N; j++)ret[i][j] = A[i][j];
+		return ret;
 	}
 
 	int** half_result = matrix_pow(A, pow / (long long)2);
@@ -36,7 +39,8 @@ int** matrix_pow(int** A, long long pow) {
 		ans = matrix_mul(half_result, half_result);
 	}
 
-	//이 부분에서 half_result를 제거하면 메모리누수가 생기지 않을듯?
+	//for (int i = 0; i < N; i++) delete[] half_result[i];
+	//delete[] half_result;
 
 	return ans;
 }
@@ -44,16 +48,16 @@ int** matrix_pow(int** A, long long pow) {
 int main(void) {
 	cin >> N >> B;
 
-	int** A = new int*[N];
-	for (int i = 0; i < N; i++) A[i] = new int[N];
+	int ** matrix = new int*[N];
+	for (int i = 0; i < N; i++) matrix[i] = new int[N];
 
 	for (int i = 0; i < N; i++) for (int j = 0; j < N; j++) {
-		cin >> A[i][j];
-		A[i][j] = A[i][j] % 1000;
+		cin >> matrix[i][j];
+		matrix[i][j] = matrix[i][j] % 1000;
 	}
 	
 
-	int** ans = matrix_pow(A, B);
+	int** ans = matrix_pow(matrix, B);
 
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) cout << ans[i][j] << " ";
