@@ -38,7 +38,7 @@ class Solution {
         int N = sc.nextInt();
         int cmd, result, check;
 
-        for (int c = 0; c < N; ++c) {
+        for (int c = 1; c <= N; ++c) {
 
             cmd =  sc.nextInt();
             switch (cmd) {
