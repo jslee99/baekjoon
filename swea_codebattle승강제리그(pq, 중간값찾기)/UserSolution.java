@@ -87,7 +87,8 @@ class UserSolution {
     }
 
     static void clean(PriorityQueue<Player> pq){
-        while (pq.peek().ver < players[pq.peek().id].ver)
+        //ver이 -1이나 MAX_VALUE가 나올 수 있는 경우가 있나?
+        while (pq.peek().ver != -1 && pq.peek().ver != Integer.MAX_VALUE && pq.peek().ver < players[pq.peek().id].ver)
             pq.poll();
     }
     int move() {
@@ -135,7 +136,7 @@ class UserSolution {
                     rightLeague.rightMinQ.offer(rightLeague.leftMaxQ.poll());
                     clean(rightLeague.leftMaxQ);
                     //차이가 0이됨
-                    if(leftPlayer.compareTo(rightLeague.leftMaxQ.peek()) < 0){
+                    if(leftPlayer.compareTo(rightLeague.rightMinQ.peek()) < 0){
                         rightLeague.leftMaxQ.offer(leftPlayer);
                     }else{
                         rightLeague.leftMaxQ.offer(rightLeague.rightMinQ.poll());
