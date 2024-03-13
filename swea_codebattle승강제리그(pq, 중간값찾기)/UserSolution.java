@@ -131,10 +131,12 @@ class UserSolution {
                 rightLeague.minQ.offer(leftPlayer);
                 clean(rightLeague.leftMaxQ);
                 clean(rightLeague.rightMinQ);
+
+
                 if(i >= L - 2){
                     //차이가 2이므로 균형을 맞춰줌
                     rightLeague.rightMinQ.offer(rightLeague.leftMaxQ.poll());
-                    clean(rightLeague.leftMaxQ);
+                    clean(rightLeague.rightMinQ);
                     //차이가 0이됨
                     if(leftPlayer.compareTo(rightLeague.rightMinQ.peek()) < 0){
                         rightLeague.leftMaxQ.offer(leftPlayer);
@@ -184,7 +186,87 @@ class UserSolution {
     }
 
     int trade(){
-        return 0;
+        int res = 0;
+        for(int i = 0; i < L - 1; i++){
+            League leftLeague = leagues[i];
+            clean(leftLeague.leftMaxQ);
+            Player leftPlayer = leftLeague.leftMaxQ.poll();
+            League rightLeague = leagues[i + 1];
+            clean(rightLeague.maxQ);
+            Player rightPlayer = rightLeague.maxQ.poll();
+
+            players[leftPlayer.id].ver = ++leftPlayer.ver;
+            players[rightPlayer.id].ver = ++rightPlayer.ver;
+
+            res += leftPlayer.id;
+            res += rightPlayer.id;
+
+            swaps[i][0] = leftPlayer;
+            swaps[i][1] = rightPlayer;
+        }
+
+        for(int i = 0; i < L - 1; i++){
+            //left player to right league
+
+            {
+                Player leftPlayer = swaps[i][0];
+                League rightLeague = leagues[i + 1];
+
+                rightLeague.maxQ.offer(leftPlayer);
+                rightLeague.minQ.offer(leftPlayer);
+
+                if(i >= L - 2){
+                    //차이가2
+                    clean(rightLeague.leftMaxQ);
+                    rightLeague.rightMinQ.offer(rightLeague.leftMaxQ.poll());
+                    clean(rightLeague.rightMinQ);
+                    //차이가 0
+                    if (leftPlayer.compareTo(rightLeague.rightMinQ.peek()) < 0) {
+                        rightLeague.leftMaxQ.offer(leftPlayer);
+                    }else{
+                        rightLeague.leftMaxQ.offer(rightLeague.rightMinQ.poll());
+                        rightLeague.rightMinQ.offer(leftPlayer);
+                    }
+                }else{
+                    clean(rightLeague.leftMaxQ);
+                    if (leftPlayer.compareTo(rightLeague.leftMaxQ.peek()) < 0) {
+                        rightLeague.rightMinQ.offer(rightLeague.leftMaxQ.poll());
+                        rightLeague.leftMaxQ.offer(leftPlayer);
+                    }else{
+                        rightLeague.rightMinQ.offer(leftPlayer);
+                    }
+                }
+            }
+
+            {
+                Player rightPlayer = swaps[i][1];
+                League leftLeague = leagues[i];
+
+                leftLeague.maxQ.offer(rightPlayer);
+                leftLeague.minQ.offer(rightPlayer);
+
+                if(i <= 0){
+                    //같음
+                    clean(leftLeague.rightMinQ);
+                    if(rightPlayer.compareTo(leftLeague.rightMinQ.peek()) < 0){
+                        leftLeague.leftMaxQ.offer(rightPlayer);
+                    }else{
+                        leftLeague.leftMaxQ.offer(leftLeague.rightMinQ.poll());
+                        leftLeague.rightMinQ.offer(rightPlayer);
+                    }
+                }else{
+                    //같음
+                    clean(leftLeague.rightMinQ);
+                    if(rightPlayer.compareTo(leftLeague.rightMinQ.peek()) < 0){
+                        leftLeague.leftMaxQ.offer(rightPlayer);
+                    }else{
+                        leftLeague.leftMaxQ.offer(leftLeague.rightMinQ.poll());
+                        leftLeague.rightMinQ.offer(rightPlayer);
+                    }
+                }
+            }
+        }
+        return res;
     }
 
 }
