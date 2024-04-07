@@ -1,0 +1,42 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Main{
+    static int[] A, B;
+    static int N, M;
+    static StringBuilder sb = new StringBuilder();
+
+    static void combRe(int start, int idx){
+        if(idx >= M){
+            for(int i = 0; i < M; i++){
+                sb.append(B[i]).append(' ');
+            }
+            sb.append('\n');
+            return;
+        }
+
+        for(int i = start; i < N; i++){
+            B[idx] = A[i];
+            combRe(i, idx + 1);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+
+        st = new StringTokenizer(br.readLine(), " ");
+        N = Integer.parseInt(st.nextToken()); M = Integer.parseInt(st.nextToken()); A = new int[N]; B = new int[M];
+        st = new StringTokenizer(br.readLine(), " ");
+        for(int i = 0; i < N; i++) A[i] = Integer.parseInt(st.nextToken());
+        Arrays.sort(A);
+
+        combRe(0, 0);
+
+        System.out.println(sb);
+        br.close();
+
+    }
+}
